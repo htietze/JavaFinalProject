@@ -1,9 +1,11 @@
 package SpoonacularAPI;
 
-import SpoonacularAPI.BasicRecipeObjects.RecipeIngredients;
 import com.google.gson.Gson;
+import kong.unirest.JsonNode;
 import kong.unirest.ObjectMapper;
 import kong.unirest.Unirest;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class Main {
 
@@ -19,9 +21,21 @@ public class Main {
 
         String url = "https://api.spoonacular.com/recipes/findByIngredients?ingredients=chicken,+capers&number=1&apiKey=63c0322b83d54b45814e74049b156266";
 
-        RecipeIngredients recipeIngredients = Unirest.get(url).asObject(RecipeIngredients.class).getBody();
+        //String testString = Unirest.get(url).asString().getBody();
 
-        System.out.println(recipeIngredients.getTitle());
+        JsonNode test = Unirest.get(url).asJson().getBody();
+
+        System.out.println(test);
+
+        JSONArray test2 = test.getArray();
+
+        System.out.println(test2);
+
+        JSONObject test3 = test2.getJSONObject(0);
+
+        String test4 = test3.getString("title");
+
+        System.out.println(test4);
 
     }
 }

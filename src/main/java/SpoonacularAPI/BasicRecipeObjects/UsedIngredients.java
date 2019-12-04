@@ -2,8 +2,8 @@ package SpoonacularAPI.BasicRecipeObjects;
 
 public class UsedIngredients {
 
-    private int id;
-    private double amount;
+    private String id;
+    private String amount;
     private String originalName;
     private String image;
     private String unit;
@@ -15,25 +15,25 @@ public class UsedIngredients {
     private String aisle;
     private String[] metaInformation;
 
-    public UsedIngredients(String originalName, String image,
-                           double amount, String unit,
-                           String unitShort, String original,
-                           String name, String unitLong,
-                           String originalString, int id,
-                           String aisle, String[] metaInformation) {
-        this.originalName = originalName;
-        this.image = image;
-        this.amount = amount;
-        this.unit = unit;
-        this.unitShort = unitShort;
-        this.original = original;
-        this.name = name;
-        this.unitLong = unitLong;
-        this.originalString = originalString;
-        this.id = id;
-        this.aisle = aisle;
-        this.metaInformation = metaInformation;
-    }
+//    public UsedIngredients(String originalName, String image,
+//                           double amount, String unit,
+//                           String unitShort, String original,
+//                           String name, String unitLong,
+//                           String originalString, int id,
+//                           String aisle, String[] metaInformation) {
+//        this.originalName = originalName;
+//        this.image = image;
+//        this.amount = amount;
+//        this.unit = unit;
+//        this.unitShort = unitShort;
+//        this.original = original;
+//        this.name = name;
+//        this.unitLong = unitLong;
+//        this.originalString = originalString;
+//        this.id = id;
+//        this.aisle = aisle;
+//        this.metaInformation = metaInformation;
+//    }
 
     public String getOriginalName () { return originalName; }
     public void setOriginalName (String originalName) { this.originalName = originalName; }
@@ -41,8 +41,8 @@ public class UsedIngredients {
     public String getImage () { return image; }
     public void setImage (String image) { this.image = image; }
 
-    public double getAmount () { return amount; }
-    public void setAmount (double amount) { this.amount = amount; }
+    public String getAmount () { return amount; }
+    public void setAmount (String amount) { this.amount = amount; }
 
     public String getUnit () { return unit; }
     public void setUnit (String unit) { this.unit = unit; }
@@ -62,8 +62,8 @@ public class UsedIngredients {
     public String getOriginalString () { return originalString; }
     public void setOriginalString (String originalString) { this.originalString = originalString; }
 
-    public int getId () { return id; }
-    public void setId (int id) { this.id = id; }
+    public String getId () { return id; }
+    public void setId (String id) { this.id = id; }
 
     public String getAisle () { return aisle; }
     public void setAisle (String aisle) { this.aisle = aisle; }
