@@ -1,11 +1,14 @@
 package SpoonacularAPI;
 
+import SpoonacularAPI.BasicRecipeObjects.RecipeIngredients;
 import com.google.gson.Gson;
-import kong.unirest.JsonNode;
-import kong.unirest.ObjectMapper;
-import kong.unirest.Unirest;
+import kong.unirest.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.util.List;
+import java.util.Optional;
 
 public class Main {
 
@@ -24,6 +27,23 @@ public class Main {
         //String testString = Unirest.get(url).asString().getBody();
 
         JsonNode test = Unirest.get(url).asJson().getBody();
+        
+//        Optional<UnirestParsingException> p = Unirest.get(url)
+//                .asObject(RecipeIngredients[].class)
+//                .getParsingError();
+//        System.out.println(p.get());
+//        System.out.println(p.get().getCause());
+        
+        
+        RecipeIngredients[] r = Unirest.get(url)
+                .asObject(RecipeIngredients[].class)
+                .getBody();
+    
+        System.out.println("Response " + r[0]);
+        
+               // .getBody();
+    
+      //  System.out.println(i);
 
         System.out.println(test);
 
