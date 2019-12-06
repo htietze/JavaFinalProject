@@ -1,15 +1,116 @@
 package SpoonacularAPI;
 
-import javax.swing.*;
+import SpoonacularAPI.BasicRecipeObjects.RecipeIngredients;
 
-public class RecipeChoiceGUI {
-    private JList matchingRecipesList;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
+public class RecipeChoiceGUI extends JFrame{
+    
     private JLabel recipesDisplayed;
     private JTextField ingredientSearchTextField;
     private JLabel searchLabel;
     private JButton quitButton;
     private JButton searchButton;
-    private JList ingredientList;
+    private JList<String> ingredientList;
     private JLabel ingredientsLabel;
     private JButton addIngredientButton;
+    private JPanel mainPanel;
+    private JButton saveToDBButton;
+    private JTable matchingRecipesJTable;
+    
+    private DefaultListModel<String> ingredientListModel;
+    private DefaultTableModel matchingRecipesJTableModel;
+
+    private RecipeController controller;
+
+    RecipeChoiceGUI(RecipeController controller) {
+
+        this.controller = controller;
+
+        setTitle("Recipe Finder");
+        setContentPane(mainPanel);
+        pack();
+        setVisible(true);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        
+        configureIngredientJList();
+        configureMatchingRecipeJTable();
+        addActionListeners();
+        
+    }
+    
+    public void configureIngredientJList() {
+        
+        ingredientListModel = new DefaultListModel<>();
+        ingredientList.setModel(ingredientListModel);
+        ingredientList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
+    }
+    
+    public void configureMatchingRecipeJTable() {
+        
+        matchingRecipesJTableModel = new DefaultTableModel();
+        matchingRecipesJTable.setModel(matchingRecipesJTableModel);
+        matchingRecipesJTableModel.addColumn("Recipe ID");
+        matchingRecipesJTableModel.addColumn("Recipe Name");
+        matchingRecipesJTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    }
+    
+    public void addActionListeners() {
+        
+        quitButton.addActionListener(e -> controller.quitProgram());
+        
+        addIngredientButton.addActionListener(e -> {
+            // find out how to check for numbers and symbols, get rid of em.
+            // pattern compile thing and matching..
+            if (ingredientSearchTextField.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(mainPanel, "Please enter a valid ingredient");
+            } else if (ingredientListModel.contains(ingredientSearchTextField.getText())) {
+                JOptionPane.showMessageDialog(mainPanel, "This ingredient is already added");
+            } else {
+                String ingredient = ingredientSearchTextField.getText();
+                if (ingredientListModel.size() < 3) {
+                    ingredientListModel.addElement(ingredient);
+                    ingredientSearchTextField.setText("");
+                } else {
+                    JOptionPane.showMessageDialog(mainPanel, "Three ingredients already entered");
+                    ingredientSearchTextField.setText("");
+                }
+            }
+        });
+        
+        searchButton.addActionListener(e -> {
+            if (!ingredientListModel.isEmpty()) {
+                String ingredientsURLChunk = "";
+                String ingredientsSearched = "";
+                for (int x = 0 ; x < ingredientListModel.size() ; x++) {
+                    if (ingredientsURLChunk.isEmpty()) {
+                        ingredientsURLChunk = ingredientListModel.get(x);
+                        ingredientsSearched = ingredientListModel.get(x);
+                    } else {
+                        ingredientsURLChunk = ingredientsURLChunk + ",+" + ingredientListModel.get(x);
+                        ingredientsSearched = ingredientsSearched + ", " + ingredientListModel.get(x);
+                    }
+                }
+                RecipeIngredients[] matchingRecipes = controller.searchByIngredient(ingredientsURLChunk);
+                displayMatchingRecipes(matchingRecipes);
+                recipesDisplayed.setText("Recipes displayed containing: " + ingredientsSearched);
+                ingredientListModel.clear();
+            }
+        });
+    }
+    
+    // add listeners
+    
+    public void displayMatchingRecipes(RecipeIngredients[] recipes) {
+        
+        // ADD VALIDATION TO SEE IF THERE ARE ANY RECIPES
+        // breaks if no recipes match.
+        for (RecipeIngredients r : recipes) {
+            String recipeIdString = Integer.toString(r.getId());
+            String recipeTitle = r.getTitle();
+            matchingRecipesJTableModel.addRow(new String[]{recipeIdString, recipeTitle});
+        }
+    }
 }
