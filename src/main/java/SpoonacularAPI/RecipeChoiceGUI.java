@@ -4,6 +4,9 @@ import SpoonacularAPI.BasicRecipeObjects.RecipeIngredients;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class RecipeChoiceGUI extends JFrame{
     
@@ -16,7 +19,7 @@ public class RecipeChoiceGUI extends JFrame{
     private JLabel ingredientsLabel;
     private JButton addIngredientButton;
     private JPanel mainPanel;
-    private JButton saveToDBButton;
+    private JButton getRecipeStepsButton;
     private JTable matchingRecipesJTable;
     
     private DefaultListModel<String> ingredientListModel;
@@ -54,10 +57,42 @@ public class RecipeChoiceGUI extends JFrame{
         matchingRecipesJTable.setModel(matchingRecipesJTableModel);
         matchingRecipesJTableModel.addColumn("Recipe ID");
         matchingRecipesJTableModel.addColumn("Recipe Name");
+        // https://kodejava.org/how-do-i-set-or-change-jtable-column-width/
+        TableColumn recipeIdColumn = matchingRecipesJTable.getColumnModel().getColumn(0);
+        recipeIdColumn.setMinWidth(100);
+        recipeIdColumn.setMaxWidth(150);
         matchingRecipesJTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
     
     public void addActionListeners() {
+    
+        JPopupMenu rightClickMenu = new JPopupMenu();
+        JMenuItem deleteMenuItem = new JMenuItem("Delete");
+        rightClickMenu.add(deleteMenuItem);
+        deleteMenuItem.addActionListener(e -> {
+            deleteIngredient();
+        });
+        
+        ingredientList.setComponentPopupMenu(rightClickMenu);
+        ingredientList.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int selection = ingredientList.locationToIndex(e.getPoint());
+                ingredientList.setSelectedIndex(selection);
+            }
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
         
         quitButton.addActionListener(e -> controller.quitProgram());
         
@@ -94,23 +129,35 @@ public class RecipeChoiceGUI extends JFrame{
                     }
                 }
                 RecipeIngredients[] matchingRecipes = controller.searchByIngredient(ingredientsURLChunk);
-                displayMatchingRecipes(matchingRecipes);
-                recipesDisplayed.setText("Recipes displayed containing: " + ingredientsSearched);
-                ingredientListModel.clear();
+                displayMatchingRecipes(matchingRecipes, ingredientsSearched);
+            } else {
+                JOptionPane.showMessageDialog(mainPanel, "Please enter ingredients");
             }
         });
     }
     
     // add listeners
     
-    public void displayMatchingRecipes(RecipeIngredients[] recipes) {
+    public void displayMatchingRecipes(RecipeIngredients[] recipes, String ingredients) {
         
         // ADD VALIDATION TO SEE IF THERE ARE ANY RECIPES
         // breaks if no recipes match.
-        for (RecipeIngredients r : recipes) {
-            String recipeIdString = Integer.toString(r.getId());
-            String recipeTitle = r.getTitle();
-            matchingRecipesJTableModel.addRow(new String[]{recipeIdString, recipeTitle});
+        if (recipes != null) {
+            for (RecipeIngredients r : recipes) {
+                String recipeIdString = Integer.toString(r.getId());
+                String recipeTitle = r.getTitle();
+                matchingRecipesJTableModel.addRow(new String[]{recipeIdString, recipeTitle});
+                recipesDisplayed.setText("Recipes containing:\n" + ingredients);
+                ingredientListModel.clear();
+            }
+        } else {
+            ingredientListModel.clear();
+            recipesDisplayed.setText("No recipes found containing:\n" + ingredients);
         }
+    }
+    
+    public void deleteIngredient() {
+        int selectedIndex = ingredientList.getSelectedIndex();
+        ingredientListModel.remove(selectedIndex);
     }
 }

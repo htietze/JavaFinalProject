@@ -10,8 +10,6 @@ public class Main {
         RecipeController recipeController = new RecipeController(apiContact);
         recipeChoiceGUI = new RecipeChoiceGUI(recipeController);
         
-        
-        
     }
     
     public static void quit() { recipeChoiceGUI.dispose(); }

@@ -10,7 +10,7 @@ public class RecipeIngredients {
     private int missedIngredientCount;
     private MissedIngredients[] missedIngredients;
     private UsedIngredients[] usedIngredients;
-    private String[] unusedIngredients;
+    private UnusedIngredients[] unusedIngredients;
     private int likes;
 
 //    public RecipeIngredients(String image, UsedIngredients[] usedIngredients,
@@ -29,6 +29,7 @@ public class RecipeIngredients {
 //        this.usedIngredientCount = usedIngredientCount;
 //        this.likes = likes;
 //    }
+    
     
     public int getId() {
         return id;
@@ -94,11 +95,11 @@ public class RecipeIngredients {
         this.usedIngredients = usedIngredients;
     }
     
-    public String[] getUnusedIngredients() {
+    public UnusedIngredients[] getUnusedIngredients() {
         return unusedIngredients;
     }
     
-    public void setUnusedIngredients(String[] unusedIngredients) {
+    public void setUnusedIngredients(UnusedIngredients[] unusedIngredients) {
         this.unusedIngredients = unusedIngredients;
     }
     

@@ -20,7 +20,7 @@ public class APIContact {
         });
         
         String url = "https://api.spoonacular.com/recipes/findByIngredients?ingredients="
-                + ingredients + "&number=3" + "&apiKey=" + Spoonacular_API_KEY;
+                + ingredients + "&number=10" + "&apiKey=" + Spoonacular_API_KEY;
         
         RecipeIngredients[] recipeIngredients = Unirest.get(url)
                 .asObject(RecipeIngredients[].class)
