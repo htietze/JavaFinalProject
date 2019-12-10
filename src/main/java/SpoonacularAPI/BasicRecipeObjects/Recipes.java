@@ -1,6 +1,6 @@
 package SpoonacularAPI.BasicRecipeObjects;
 
-public class RecipeIngredients {
+public class Recipes {
 
     private int id;
     private String title;
@@ -109,11 +109,5 @@ public class RecipeIngredients {
     
     public void setLikes(int likes) {
         this.likes = likes;
-    }
-    
-    @Override
-    public String toString()
-    {
-        return "ClassPojo [image = "+image+", usedIngredients = "+usedIngredients+", missedIngredients = "+missedIngredients+", missedIngredientCount = "+missedIngredientCount+", unusedIngredients = "+unusedIngredients+", id = "+id+", title = "+title+", imageType = "+imageType+", usedIngredientCount = "+usedIngredientCount+", likes = "+likes+"]";
     }
 }

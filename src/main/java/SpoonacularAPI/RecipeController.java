@@ -1,6 +1,6 @@
 package SpoonacularAPI;
 
-import SpoonacularAPI.BasicRecipeObjects.RecipeIngredients;
+import SpoonacularAPI.BasicRecipeObjects.Recipes;
 
 public class RecipeController {
     
@@ -8,9 +8,13 @@ public class RecipeController {
     
     RecipeController(APIContact api) { apiContact = api; }
 
-    protected RecipeIngredients[] searchByIngredient(String ingredients) {
-        RecipeIngredients[] apiResponse = apiContact.giveAPIIngredients(ingredients);
+    protected Recipes[] searchByIngredient(String ingredients) {
+        Recipes[] apiResponse = apiContact.giveAPIIngredients(ingredients);
         return apiResponse;
+    }
+    
+    protected void askContactForRecipe(int recipeId) {
+        apiContact.askAPIForRecipe(recipeId);
     }
     
     protected void quitProgram() { Main.quit(); }

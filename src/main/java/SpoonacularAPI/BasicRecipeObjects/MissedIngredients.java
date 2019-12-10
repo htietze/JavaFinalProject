@@ -130,10 +130,4 @@ public class MissedIngredients {
     public void setMetaInformation(String[] metaInformation) {
         this.metaInformation = metaInformation;
     }
-    
-    @Override
-    public String toString()
-    {
-        return "ClassPojo [originalName = "+originalName+", image = "+image+", amount = "+amount+", unit = "+unit+", unitShort = "+unitShort+", original = "+original+", name = "+name+", unitLong = "+unitLong+", originalString = "+originalString+", id = "+id+", aisle = "+aisle+", metaInformation = "+metaInformation+"]";
-    }
 }

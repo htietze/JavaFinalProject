@@ -1,6 +1,6 @@
 package SpoonacularAPI;
 
-import SpoonacularAPI.BasicRecipeObjects.RecipeIngredients;
+import SpoonacularAPI.BasicRecipeObjects.Recipes;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -33,12 +33,14 @@ public class RecipeChoiceGUI extends JFrame{
 
         setTitle("Recipe Finder");
         setContentPane(mainPanel);
+        getRootPane().setDefaultButton(addIngredientButton);
         pack();
         setVisible(true);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         
         configureIngredientJList();
         configureMatchingRecipeJTable();
+        configureIngredientPopUpMenu();
         addActionListeners();
         
     }
@@ -64,21 +66,21 @@ public class RecipeChoiceGUI extends JFrame{
         matchingRecipesJTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
     
-    public void addActionListeners() {
-    
+    public void configureIngredientPopUpMenu() {
         JPopupMenu rightClickMenu = new JPopupMenu();
         JMenuItem deleteMenuItem = new JMenuItem("Delete");
         rightClickMenu.add(deleteMenuItem);
-        deleteMenuItem.addActionListener(e -> {
-            deleteIngredient();
-        });
-        
-        ingredientList.setComponentPopupMenu(rightClickMenu);
-        ingredientList.addMouseListener(new MouseListener() {
+        deleteMenuItem.addActionListener(e -> deleteIngredient());
+        createMouseListener(ingredientList, rightClickMenu);
+    }
+    
+    public void createMouseListener(JList listName, JPopupMenu jMenu) {
+        listName.setComponentPopupMenu(jMenu);
+        listName.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                int selection = ingredientList.locationToIndex(e.getPoint());
-                ingredientList.setSelectedIndex(selection);
+                int selection = listName.locationToIndex(e.getPoint());
+                listName.setSelectedIndex(selection);
             }
             @Override
             public void mousePressed(MouseEvent e) {
@@ -93,57 +95,45 @@ public class RecipeChoiceGUI extends JFrame{
             public void mouseExited(MouseEvent e) {
             }
         });
+    }
+    
+    public void addActionListeners() {
         
         quitButton.addActionListener(e -> controller.quitProgram());
         
-        addIngredientButton.addActionListener(e -> {
-            // find out how to check for numbers and symbols, get rid of em.
-            // pattern compile thing and matching..
-            if (ingredientSearchTextField.getText().trim().isEmpty()) {
-                JOptionPane.showMessageDialog(mainPanel, "Please enter a valid ingredient");
-            } else if (ingredientListModel.contains(ingredientSearchTextField.getText())) {
-                JOptionPane.showMessageDialog(mainPanel, "This ingredient is already added");
-            } else {
-                String ingredient = ingredientSearchTextField.getText();
-                if (ingredientListModel.size() < 3) {
-                    ingredientListModel.addElement(ingredient);
-                    ingredientSearchTextField.setText("");
-                } else {
-                    JOptionPane.showMessageDialog(mainPanel, "Three ingredients already entered");
-                    ingredientSearchTextField.setText("");
-                }
-            }
-        });
+        addIngredientButton.addActionListener(e -> addIngredient());
         
-        searchButton.addActionListener(e -> {
-            if (!ingredientListModel.isEmpty()) {
-                String ingredientsURLChunk = "";
-                String ingredientsSearched = "";
-                for (int x = 0 ; x < ingredientListModel.size() ; x++) {
-                    if (ingredientsURLChunk.isEmpty()) {
-                        ingredientsURLChunk = ingredientListModel.get(x);
-                        ingredientsSearched = ingredientListModel.get(x);
-                    } else {
-                        ingredientsURLChunk = ingredientsURLChunk + ",+" + ingredientListModel.get(x);
-                        ingredientsSearched = ingredientsSearched + ", " + ingredientListModel.get(x);
-                    }
-                }
-                RecipeIngredients[] matchingRecipes = controller.searchByIngredient(ingredientsURLChunk);
-                displayMatchingRecipes(matchingRecipes, ingredientsSearched);
-            } else {
-                JOptionPane.showMessageDialog(mainPanel, "Please enter ingredients");
-            }
+        searchButton.addActionListener(e -> searchForRecipes());
+        
+        getRecipeStepsButton.addActionListener(e -> {
+            getRecipeSteps(324694);
+//            if (matchingRecipesJTable.getSelectedRow() != -1) {
+//                int selectedRow = matchingRecipesJTable.getSelectedRow();
+//                String recipeId = matchingRecipesJTableModel.getValueAt(selectedRow, 0).toString();
+//                int convertedId = Integer.parseInt(recipeId);
+//                int testId = 324694;
+//                getRecipeSteps(testId);
+//            } else {
+//                JOptionPane.showMessageDialog(mainPanel, "No recipe selected");
+//            }
+            
+            // ADD MOUSE LISTENER FOR JTABLE
+            // send Recipe ID to controller, which boots up
+            // selectedGUI and then calls the API contact class
+            // to get the instructions objects!
+            // MORE OBJECTS
+            // then feed those object parts into the selectedGUI class
+            // for displaying them
+            
         });
     }
     
-    // add listeners
-    
-    public void displayMatchingRecipes(RecipeIngredients[] recipes, String ingredients) {
+    public void displayMatchingRecipes(Recipes[] recipes, String ingredients) {
         
         // ADD VALIDATION TO SEE IF THERE ARE ANY RECIPES
         // breaks if no recipes match.
         if (recipes != null) {
-            for (RecipeIngredients r : recipes) {
+            for (Recipes r : recipes) {
                 String recipeIdString = Integer.toString(r.getId());
                 String recipeTitle = r.getTitle();
                 matchingRecipesJTableModel.addRow(new String[]{recipeIdString, recipeTitle});
@@ -156,8 +146,56 @@ public class RecipeChoiceGUI extends JFrame{
         }
     }
     
+    public void addIngredient() {
+        // find out how to check for numbers and symbols, get rid of em.
+        // pattern compile thing and matching..
+        if (ingredientSearchTextField.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(mainPanel, "Please enter a valid ingredient");
+        } else if (ingredientListModel.contains(ingredientSearchTextField.getText())) {
+            JOptionPane.showMessageDialog(mainPanel, "This ingredient is already added");
+        } else {
+            String ingredient = ingredientSearchTextField.getText();
+            if (ingredientListModel.size() < 3) {
+                ingredientListModel.addElement(ingredient);
+                ingredientSearchTextField.setText("");
+            } else {
+                JOptionPane.showMessageDialog(mainPanel, "Three ingredients already entered");
+                ingredientSearchTextField.setText("");
+            }
+        }
+    }
+    
     public void deleteIngredient() {
         int selectedIndex = ingredientList.getSelectedIndex();
-        ingredientListModel.remove(selectedIndex);
+        if (selectedIndex != -1) {
+            ingredientListModel.remove(selectedIndex);
+        }
+    }
+    
+    public void searchForRecipes() {
+        if (!ingredientListModel.isEmpty()) {
+            String ingredientsURLChunk = "";
+            String ingredientsSearched = "";
+            for (int x = 0 ; x < ingredientListModel.size() ; x++) {
+                if (ingredientsURLChunk.isEmpty()) {
+                    ingredientsURLChunk = ingredientListModel.get(x);
+                    ingredientsSearched = ingredientListModel.get(x);
+                } else {
+                    ingredientsURLChunk = ingredientsURLChunk + ",+" + ingredientListModel.get(x);
+                    ingredientsSearched = ingredientsSearched + ", " + ingredientListModel.get(x);
+                }
+            }
+            Recipes[] matchingRecipes = controller.searchByIngredient(ingredientsURLChunk);
+            displayMatchingRecipes(matchingRecipes, ingredientsSearched);
+        } else {
+            JOptionPane.showMessageDialog(mainPanel, "Please enter ingredients");
+        }
+    }
+    
+    public void getRecipeSteps(int recipeId) {
+        controller.askContactForRecipe(recipeId);
+        
+        
+        
     }
 }
