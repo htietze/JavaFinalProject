@@ -12,11 +12,11 @@ public class Main {
         recipeChoiceGUI = new RecipeChoiceGUI(recipeController);
     }
     
-    public static void createRecipeSelected(FinalRecipeObject fullRecipe) {
+    public static void createRecipeSelected(FinalRecipeObject fullRecipe, String recipeName) {
         APIContact apiContact = new APIContact();
         RecipeController recipeController = new RecipeController(apiContact);
         recipeSelectedGUI = new RecipeSelectedGUI(recipeController);
-        recipeSelectedGUI.delegateRecipeParts(fullRecipe);
+        recipeSelectedGUI.delegateRecipeParts(fullRecipe, recipeName);
     }
     
     public static void quit() { recipeChoiceGUI.dispose(); }

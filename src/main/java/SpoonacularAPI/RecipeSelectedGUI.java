@@ -13,6 +13,7 @@ public class RecipeSelectedGUI extends JFrame {
     private JButton secondaryQuitButton;
     private JLabel ingredientsLabel;
     private JLabel instructionsLabel;
+    private JLabel recipeNameLabel;
     
     private DefaultListModel<String> focusedIngredientListModel;
     private DefaultListModel<String> focusedInstructionListModel;
@@ -51,10 +52,11 @@ public class RecipeSelectedGUI extends JFrame {
         focusedInstructionsJList.setModel(focusedInstructionListModel);
     }
     
-    public void delegateRecipeParts(FinalRecipeObject fullRecipe) {
+    public void delegateRecipeParts(FinalRecipeObject fullRecipe, String recipeName) {
         RecipeSection[] recipeSections = fullRecipe.getSections();
         Ingredients[] recipeIngredients = fullRecipe.getIngredients();
         
+        recipeNameLabel.setText(recipeName);
         displayInstructions(recipeSections);
         displayIngredients(recipeIngredients);
     }

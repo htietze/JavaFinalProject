@@ -9,6 +9,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class RecipeChoiceGUI extends JFrame{
+
+//    private static String selectedRecipeName;
     
     private JLabel recipesDisplayed;
     private JTextField ingredientSearchTextField;
@@ -110,9 +112,10 @@ public class RecipeChoiceGUI extends JFrame{
             if (matchingRecipesJTable.getSelectedRow() != -1) {
                 int selectedRow = matchingRecipesJTable.getSelectedRow();
                 String recipeId = matchingRecipesJTableModel.getValueAt(selectedRow, 0).toString();
+                String selectedRecipeName = matchingRecipesJTableModel.getValueAt(selectedRow, 1).toString();
                 int convertedId = Integer.parseInt(recipeId);
                 // int testId = 324694;
-                getRecipeSteps(convertedId);
+                getRecipeSteps(convertedId, selectedRecipeName);
             } else {
                 JOptionPane.showMessageDialog(mainPanel, "No recipe selected");
             }
@@ -192,7 +195,8 @@ public class RecipeChoiceGUI extends JFrame{
         }
     }
     
-    public void getRecipeSteps(int recipeId) {
-        controller.askContactForRecipe(recipeId);
+    public void getRecipeSteps(int recipeId, String selectedRecipeName) {
+        controller.askContactForRecipe(recipeId, selectedRecipeName);
+        
     }
 }

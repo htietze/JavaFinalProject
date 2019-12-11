@@ -31,10 +31,6 @@ public class APIContact {
         Ingredients[] ingredients = getRecipeIngredients(recipeId);
         
         FinalRecipeObject fullRecipe = new FinalRecipeObject(sections, ingredients);
-    
-        System.out.println("API Contact:");
-        System.out.println((fullRecipe.getSections().length));
-        System.out.println((fullRecipe.getIngredients().length));
         
         return fullRecipe;
     }

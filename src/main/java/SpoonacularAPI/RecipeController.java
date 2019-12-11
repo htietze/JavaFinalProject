@@ -13,9 +13,9 @@ public class RecipeController {
         return apiResponse;
     }
     
-    protected void askContactForRecipe(int recipeId) {
+    protected void askContactForRecipe(int recipeId, String recipeName) {
         FinalRecipeObject fullRecipe = apiContact.askAPIForRecipe(recipeId);
-        Main.createRecipeSelected(fullRecipe);
+        Main.createRecipeSelected(fullRecipe, recipeName);
     }
     
     protected void quitProgram() { Main.quit(); }
