@@ -1,15 +1,15 @@
 package SpoonacularAPI.IngredientMeasures;
 
-public class IngredientUsMeasure {
+public class Metric {
     
-    private int value;
+    private double value;
     private String unit;
     
-    public int getValue() {
+    public double getValue() {
         return value;
     }
     
-    public void setValue(int value) {
+    public void setValue(double value) {
         this.value = value;
     }
     

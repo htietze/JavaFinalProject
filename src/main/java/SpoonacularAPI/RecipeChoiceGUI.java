@@ -106,16 +106,16 @@ public class RecipeChoiceGUI extends JFrame{
         searchButton.addActionListener(e -> searchForRecipes());
         
         getRecipeStepsButton.addActionListener(e -> {
-            getRecipeSteps(324694);
-//            if (matchingRecipesJTable.getSelectedRow() != -1) {
-//                int selectedRow = matchingRecipesJTable.getSelectedRow();
-//                String recipeId = matchingRecipesJTableModel.getValueAt(selectedRow, 0).toString();
-//                int convertedId = Integer.parseInt(recipeId);
-//                int testId = 324694;
-//                getRecipeSteps(testId);
-//            } else {
-//                JOptionPane.showMessageDialog(mainPanel, "No recipe selected");
-//            }
+            // getRecipeSteps(324694);
+            if (matchingRecipesJTable.getSelectedRow() != -1) {
+                int selectedRow = matchingRecipesJTable.getSelectedRow();
+                String recipeId = matchingRecipesJTableModel.getValueAt(selectedRow, 0).toString();
+                int convertedId = Integer.parseInt(recipeId);
+                // int testId = 324694;
+                getRecipeSteps(convertedId);
+            } else {
+                JOptionPane.showMessageDialog(mainPanel, "No recipe selected");
+            }
             
             // ADD MOUSE LISTENER FOR JTABLE
             // send Recipe ID to controller, which boots up
@@ -194,8 +194,5 @@ public class RecipeChoiceGUI extends JFrame{
     
     public void getRecipeSteps(int recipeId) {
         controller.askContactForRecipe(recipeId);
-        
-        
-        
     }
 }

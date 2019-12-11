@@ -1,6 +1,7 @@
 package SpoonacularAPI;
 
 import SpoonacularAPI.BasicRecipeObjects.Recipes;
+import SpoonacularAPI.IngredientMeasures.Ingredients;
 import SpoonacularAPI.IngredientMeasures.RecipeIngredients;
 import SpoonacularAPI.RecipeInstructionObjects.RecipeSection;
 import com.google.gson.Gson;
@@ -15,7 +16,7 @@ public class APIContact {
         configureUnirest();
         
         String url = "https://api.spoonacular.com/recipes/findByIngredients?ingredients="
-                + ingredients + "&number=1" + "&apiKey=" + Spoonacular_API_KEY;
+                + ingredients + "&number=15" + "&apiKey=" + Spoonacular_API_KEY;
         
         Recipes[] recipeIngredients = Unirest.get(url)
                 .asObject(Recipes[].class)
@@ -24,37 +25,21 @@ public class APIContact {
         return recipeIngredients;
     }
     
-    public void askAPIForRecipe(int recipeId) {
+    public FinalRecipeObject askAPIForRecipe(int recipeId) {
         
-        configureUnirest();
+        RecipeSection[] sections = getRecipeSections(recipeId);
+        Ingredients[] ingredients = getRecipeIngredients(recipeId);
         
-        String instructionsUrl = "https://api.spoonacular.com/recipes/" + recipeId
-                + "/analyzedInstructions?apiKey=" + Spoonacular_API_KEY;
+        FinalRecipeObject fullRecipe = new FinalRecipeObject(sections, ingredients);
+    
+        System.out.println("API Contact:");
+        System.out.println((fullRecipe.getSections().length));
+        System.out.println((fullRecipe.getIngredients().length));
         
-        String ingredientAmountsUrl = "https://api.spoonacular.com/recipes/" + recipeId
-                + "/ingredientWidget.json?apiKey=" + Spoonacular_API_KEY;
-        
-//        RecipeSection[] recipeSections = Unirest.get(instructionsUrl)
-//                .asObject(RecipeSection[].class)
-//                .getBody();
-        
-        RecipeIngredients recipeIngredients = Unirest.get(ingredientAmountsUrl)
-                .asObject(RecipeIngredients.class)
-                .getBody();
-        
-        // PRINTS the BLANK Name, then bourbon molasses butter. things are working. these should be sent back
-        // and then cut up to make the steps strings for that side.
-//        for (RecipeSection r : recipeSections) {
-//            System.out.println(r.getName());
-//        }
-        System.out.println(recipeIngredients);
-        
-        
-        
-        
+        return fullRecipe;
     }
     
-    public void configureUnirest() {
+    private void configureUnirest() {
         Unirest.config().setObjectMapper(new ObjectMapper() {
             private Gson gson = new Gson();
             @Override
@@ -63,4 +48,45 @@ public class APIContact {
             public String writeValue(Object o) { return gson.toJson(o); }
         });
     }
+    
+    private RecipeSection[] getRecipeSections(int recipeId) {
+    
+        configureUnirest();
+    
+        String instructionsUrl = "https://api.spoonacular.com/recipes/" + recipeId
+                + "/analyzedInstructions?apiKey=" + Spoonacular_API_KEY;
+    
+        RecipeSection[] recipeSections = Unirest.get(instructionsUrl)
+                .asObject(RecipeSection[].class)
+                .getBody();
+        
+        for (RecipeSection r : recipeSections) {
+            if (r.getName() == null || r.getName().isEmpty()) {
+                r.setName("Instructions:");
+            }
+        }
+        
+        return recipeSections;
+    }
+    
+    private Ingredients[] getRecipeIngredients(int recipeId) {
+    
+        configureUnirest();
+    
+        String ingredientAmountsUrl = "https://api.spoonacular.com/recipes/" + recipeId
+                + "/ingredientWidget.json?apiKey=" + Spoonacular_API_KEY;
+    
+        RecipeIngredients recipeIngredients = Unirest.get(ingredientAmountsUrl)
+                .asObject(RecipeIngredients.class)
+                .getBody();
+        
+        Ingredients[] ingredients = recipeIngredients.getIngredients();
+        
+//        for (Ingredients i : ingredients) {
+//            System.out.println(i.getName());
+//        }
+        
+        return ingredients;
+    }
+    
 }

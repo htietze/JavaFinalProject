@@ -2,22 +2,22 @@ package SpoonacularAPI.IngredientMeasures;
 
 public class Amount {
     
-    private IngredientMetricMeasure metric;
-    private IngredientUsMeasure us;
+    private Metric metric;
+    private Us us;
     
-    public IngredientUsMeasure getUs() {
-        return us;
-    }
-    
-    public void setUs(IngredientUsMeasure us) {
-        this.us = us;
-    }
-    
-    public IngredientMetricMeasure getMetric() {
+    public Metric getMetric() {
         return metric;
     }
     
-    public void setMetric(IngredientMetricMeasure metric) {
+    public void setMetric(Metric metric) {
         this.metric = metric;
+    }
+    
+    public Us getUs() {
+        return us;
+    }
+    
+    public void setUs(Us us) {
+        this.us = us;
     }
 }
