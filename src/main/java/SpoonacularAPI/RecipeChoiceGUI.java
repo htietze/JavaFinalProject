@@ -7,10 +7,9 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.regex.Pattern;
 
 public class RecipeChoiceGUI extends JFrame{
-
-//    private static String selectedRecipeName;
     
     private JLabel recipesDisplayed;
     private JTextField ingredientSearchTextField;
@@ -76,7 +75,7 @@ public class RecipeChoiceGUI extends JFrame{
         createMouseListener(ingredientList, rightClickMenu);
     }
     
-    public void createMouseListener(JList listName, JPopupMenu jMenu) {
+    public void createMouseListener(JList<String> listName, JPopupMenu jMenu) {
         listName.setComponentPopupMenu(jMenu);
         listName.addMouseListener(new MouseListener() {
             @Override
@@ -108,63 +107,36 @@ public class RecipeChoiceGUI extends JFrame{
         searchButton.addActionListener(e -> searchForRecipes());
         
         getRecipeStepsButton.addActionListener(e -> {
-            // getRecipeSteps(324694);
             if (matchingRecipesJTable.getSelectedRow() != -1) {
                 int selectedRow = matchingRecipesJTable.getSelectedRow();
                 String recipeId = matchingRecipesJTableModel.getValueAt(selectedRow, 0).toString();
                 String selectedRecipeName = matchingRecipesJTableModel.getValueAt(selectedRow, 1).toString();
                 int convertedId = Integer.parseInt(recipeId);
-                // int testId = 324694;
                 getRecipeSteps(convertedId, selectedRecipeName);
             } else {
                 JOptionPane.showMessageDialog(mainPanel, "No recipe selected");
             }
-            
-            // ADD MOUSE LISTENER FOR JTABLE
-            // send Recipe ID to controller, which boots up
-            // selectedGUI and then calls the API contact class
-            // to get the instructions objects!
-            // MORE OBJECTS
-            // then feed those object parts into the selectedGUI class
-            // for displaying them
-            
         });
     }
     
-    public void displayMatchingRecipes(Recipes[] recipes, String ingredients) {
-        
-        // ADD VALIDATION TO SEE IF THERE ARE ANY RECIPES
-        // breaks if no recipes match.
-        if (recipes != null) {
-            for (Recipes r : recipes) {
-                String recipeIdString = Integer.toString(r.getId());
-                String recipeTitle = r.getTitle();
-                matchingRecipesJTableModel.addRow(new String[]{recipeIdString, recipeTitle});
-                recipesDisplayed.setText("Recipes containing:\n" + ingredients);
-                ingredientListModel.clear();
-            }
-        } else {
-            ingredientListModel.clear();
-            recipesDisplayed.setText("No recipes found containing:\n" + ingredients);
-        }
-    }
-    
     public void addIngredient() {
-        // find out how to check for numbers and symbols, get rid of em.
-        // pattern compile thing and matching..
-        if (ingredientSearchTextField.getText().trim().isEmpty()) {
+        String ingredient = ingredientSearchTextField.getText();
+        ingredient = ingredient.replace(" ", "");
+        boolean characterTest = Pattern.matches("^[a-zA-Z]+$", ingredient);
+    
+        if (ingredient.isEmpty()) {
             JOptionPane.showMessageDialog(mainPanel, "Please enter a valid ingredient");
-        } else if (ingredientListModel.contains(ingredientSearchTextField.getText())) {
+        } else if (!characterTest) {
+            JOptionPane.showMessageDialog(mainPanel, "Please remove invalid characters");
+        } else if (ingredientListModel.contains(ingredient)) {
             JOptionPane.showMessageDialog(mainPanel, "This ingredient is already added");
         } else {
-            String ingredient = ingredientSearchTextField.getText();
             if (ingredientListModel.size() < 3) {
                 ingredientListModel.addElement(ingredient);
-                ingredientSearchTextField.setText("");
             } else {
                 JOptionPane.showMessageDialog(mainPanel, "Three ingredients already entered");
-                ingredientSearchTextField.setText("");
             }
+            ingredientSearchTextField.setText("");
         }
     }
     
@@ -176,7 +148,9 @@ public class RecipeChoiceGUI extends JFrame{
     }
     
     public void searchForRecipes() {
-        if (!ingredientListModel.isEmpty()) {
+        if (ingredientListModel.isEmpty()) {
+            JOptionPane.showMessageDialog(mainPanel, "Please enter ingredients");
+        } else {
             String ingredientsURLChunk = "";
             String ingredientsSearched = "";
             for (int x = 0 ; x < ingredientListModel.size() ; x++) {
@@ -190,13 +164,28 @@ public class RecipeChoiceGUI extends JFrame{
             }
             Recipes[] matchingRecipes = controller.searchByIngredient(ingredientsURLChunk);
             displayMatchingRecipes(matchingRecipes, ingredientsSearched);
+        }
+    }
+    
+    public void displayMatchingRecipes(Recipes[] recipes, String ingredients) {
+        
+        if (recipes == null || recipes.length == 0) {
+            ingredientListModel.clear();
+            recipesDisplayed.setText("No recipes found containing: " + ingredients);
         } else {
-            JOptionPane.showMessageDialog(mainPanel, "Please enter ingredients");
+            // https://stackoverflow.com/questions/4577792/how-to-clear-jtable/4578501
+            matchingRecipesJTableModel.getDataVector().clear();
+            for (Recipes r : recipes) {
+                String recipeIdString = Integer.toString(r.getId());
+                String recipeTitle = r.getTitle();
+                matchingRecipesJTableModel.addRow(new String[]{recipeIdString, recipeTitle});
+                recipesDisplayed.setText("Recipes containing: " + ingredients);
+            }
+            ingredientListModel.clear();
         }
     }
     
     public void getRecipeSteps(int recipeId, String selectedRecipeName) {
         controller.askContactForRecipe(recipeId, selectedRecipeName);
-        
     }
 }

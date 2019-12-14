@@ -1,4 +1,4 @@
-package SpoonacularAPI.IngredientMeasures;
+package SpoonacularAPI.IngredientObjects;
 
 public class Us {
     

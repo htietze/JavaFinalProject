@@ -1,6 +1,6 @@
 package SpoonacularAPI;
 
-import SpoonacularAPI.IngredientMeasures.Ingredients;
+import SpoonacularAPI.IngredientObjects.Ingredients;
 import SpoonacularAPI.RecipeInstructionObjects.RecipeSection;
 
 public class FinalRecipeObject {

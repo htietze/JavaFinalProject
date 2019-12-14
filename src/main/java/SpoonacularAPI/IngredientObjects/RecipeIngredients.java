@@ -1,4 +1,4 @@
-package SpoonacularAPI.IngredientMeasures;
+package SpoonacularAPI.IngredientObjects;
 
 import java.util.Arrays;
 
