@@ -12,11 +12,12 @@ the other ingredients and the instructions. These are all displayed
 in two GUIs.
 
 # How to use it
+ -- The program is set up in the pom.xml to use **Java 12**. --
 
 To use this, first the API key must be set as an environment variable
 This API key can be received by creating an account at spoonacular.com
 Or using this one: e957221b2ce24f0ea4611d3167d5c31c
-The environment variable is named "Spoonacular_API_Key"
+The environment variable is named 'Spoonacular_API_Key'
 There is a limit of 150 points worth of calls. Not too bad for all the info
 
 Next enter in an ingredient or three into the field at the top of the main GUI.
