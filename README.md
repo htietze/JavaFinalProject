@@ -16,7 +16,6 @@ in two GUIs.
 
 To use this, first the API key must be set as an environment variable
 This API key can be received by creating an account at spoonacular.com
-Or using this one: e957221b2ce24f0ea4611d3167d5c31c
 The environment variable is named 'Spoonacular_API_Key'
 There is a limit of 150 points worth of calls. Not too bad for all the info
 
